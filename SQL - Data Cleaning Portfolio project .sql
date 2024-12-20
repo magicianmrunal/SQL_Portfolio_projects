@@ -20,8 +20,9 @@ INSERT INTO layoffs_staging SELECT * FROM layoffs;
 
 SELECT * FROM layoffs_staging;
 
--- 1. REMOVING DUPLICATES USING ROW_NUMBER()
 
+
+-- 1. REMOVING DUPLICATES USING ROW_NUMBER()
 SELECT *,
 ROW_NUMBER() OVER(PARTITION BY COMPANY,  INDUSTRY, TOTAL_LAID_OFF, PERCENTAGE_LAID_OFF, `DATE`) AS ROW_NUM
 FROM layoffs_staging;
@@ -68,21 +69,21 @@ FROM layoffs_staging;
 
 DELETE FROM layoffs_staging2 WHERE ROW_NUM > 1;
 
-
 SELECT * FROM layoffs_staging2;
 
--- 2. STANDARDIZING THE DATA
 
+
+-- 2. STANDARDIZING THE DATA
 SELECT company, TRIM(company) FROM layoffs_staging2;
 
--- REMOVING BLANKS 
 
 UPDATE layoffs_staging2	SET company = TRIM(company);
 
 SELECT DISTINCT industry FROM layoffs_staging2;
 
--- CORRECTING SPELLINGS
 
+
+-- CORRECTING SPELLINGS
 UPDATE layoffs_staging2 SET industry = 'Crypto'
 WHERE industry LIKE 'CRYPTO%';
 
@@ -102,7 +103,10 @@ WHERE country LIKE 'UNITED STATES%';
 
 SELECT `DATE`, STR_TO_DATE(`DATE`, '%m/%d/%Y')
 FROM layoffs_staging2;
-													-- CORRECTING DATE FORMATTING
+
+
+
+-- CORRECTING DATE FORMATTING
 UPDATE layoffs_staging2
 SET `DATE` = STR_TO_DATE(`DATE`,'%m/%d/%Y');
 
@@ -111,6 +115,9 @@ MODIFY `date` DATE;
 
 SELECT * FROM layoffs_staging2;
 
+
+
+-- 3. REMOVING NULL VALUES OR BLANK VALUES
 SELECT * FROM layoffs_staging2
 WHERE industry = '' OR industry IS NULL ;
 
@@ -127,7 +134,9 @@ JOIN layoffs_staging2 T2
 WHERE T1. industry IS NULL 
 AND T2.industry IS NOT NULL    
 ;
-														-- CORRECTING INDUSTRY COLUMN
+
+
+-- CORRECTING INDUSTRY COLUMN
 UPDATE layoffs_staging2 T1
 JOIN layoffs_staging2 T2
 	ON T1.company=T2.company
@@ -136,12 +145,13 @@ WHERE T1. industry IS NULL
 AND T2.industry IS NOT NULL
 ;  
 
-SELECT * FROM layoffs_staging2 WHERE TOTAL_LAID_OFF IS NULL AND PERCENTAGE_LAID_OFF IS NULL;
 
+SELECT * FROM layoffs_staging2 WHERE TOTAL_LAID_OFF IS NULL AND PERCENTAGE_LAID_OFF IS NULL;
 DELETE FROM layoffs_staging2 WHERE TOTAL_LAID_OFF IS NULL AND PERCENTAGE_LAID_OFF IS NULL;
 
--- 4. REMOVE UNWANTED COLUMNS
 
+
+-- 4. REMOVE UNWANTED COLUMNS
 ALTER TABLE layoffs_staging2 DROP COLUMN ROW_NUM;
 
 SELECT * FROM layoffs_staging2;
