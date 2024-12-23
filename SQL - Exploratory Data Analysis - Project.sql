@@ -9,6 +9,8 @@ Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, 
 SELECT *
 FROM layoffs_staging2;
 
+-- Getting the total number of people laid off
+
 SELECT MAX(total_laid_off), MAX(percentage_laid_off)
 FROM layoffs_staging2;
 
