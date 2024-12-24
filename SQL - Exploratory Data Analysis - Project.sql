@@ -65,7 +65,7 @@ SELECT STAGE, SUM(total_laid_off) FROM layoffs_staging2
 GROUP BY STAGE
 ORDER BY 2 DESC;
 
-
+--monthwise total layoffs
 SELECT SUBSTRING(`DATE`,1,7) AS `MONTH`, SUM(total_laid_off)
 FROM layoffs_staging2
 WHERE SUBSTRING(`DATE`,1,7) IS NOT NULL
@@ -74,7 +74,7 @@ ORDER BY 1
 ;
 
 
-
+---- Rolling Total of Layoffs Per Month
 WITH ROLLING_TOTAL AS
 (
 SELECT SUBSTRING(`DATE`,1,7) AS `MONTH`,
@@ -93,6 +93,8 @@ GROUP BY company, YEAR(`DATE`)
 ORDER BY 3 DESC;
 
 
+
+---- Rolling Total of Layoffs Per Year with rank
 WITH COMPANY_YEAR(company,years, total_laid_off) AS
 (
 
