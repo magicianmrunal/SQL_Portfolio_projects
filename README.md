@@ -1,4 +1,5 @@
 ****SQL Project: World Layoffs**** (2020–2023)
+
 The project focuses on understanding trends in layoffs through rigorous data cleaning and exploratory data analysis (EDA).
 
 **Project Overview This project is divided into two key parts:**
